@@ -1,0 +1,6 @@
+---
+
+# handler for restarting haproxy
+-   name: restart haproxy
+    service: name=haproxy state=restarted
+

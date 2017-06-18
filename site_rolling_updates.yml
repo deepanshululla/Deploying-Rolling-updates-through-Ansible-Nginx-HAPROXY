@@ -1,0 +1,49 @@
+---
+
+#common
+- hosts: all
+  sudo: yes
+  gather_facts: no
+
+  roles:
+    - common
+
+# web
+- hosts: web
+  sudo: yes
+  gather_facts: yes
+  serial: 1
+  #vars:
+  #  - repository: https://github.com/jweissig/episode-47.git
+  #    app_version: release-0.01
+
+
+  pre_tasks:
+  # marking server for maintainenance through haproxy
+  - name: disable server in haproxy
+    shell: echo "disable server deepanshu/{{ inventory_hostname }}" | socat stdio /var/lib/haproxy/stats
+    delegate_to: "{{ item }}"
+    with_items: lb
+
+
+  roles:
+    - web
+
+  post_tasks:
+
+  # marking server is up through haproxy
+  - name: disable web server through haproxy
+    shell: echo "enable server deepanshu/{{ inventory_hostname }}" | socat stdio /var/lib/haproxy/stats
+    delegate_to: "{{ item }}"
+    with_items:
+    - lb  
+
+
+# lb
+- hosts: lb
+  sudo: yes
+  gather_facts: yes
+
+  roles:
+    - lb
+
