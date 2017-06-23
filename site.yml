@@ -1,0 +1,5 @@
+---
+
+- include: common.yml
+- include: web.yml
+- include: lb.yml

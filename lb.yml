@@ -1,0 +1,8 @@
+# lb
+- hosts: lb
+  sudo: yes
+  gather_facts: yes
+
+  roles:
+    - lb
+
